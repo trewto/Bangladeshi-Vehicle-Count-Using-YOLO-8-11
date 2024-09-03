@@ -2,6 +2,7 @@ DEFAULT_DETECTION_PATH = 'runs/detect/exp17/labels/Shahbagh_Intersection'
 TRAINED_DETECTION_PATH = 'runs/detect/exp24/labels/Shahbagh_Intersection'
 FRAME_COUNT = 50160
 
+
 class Point:
 	def __init__(self, x, y):
 		self.x = x
