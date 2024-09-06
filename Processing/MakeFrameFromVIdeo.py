@@ -26,7 +26,7 @@ if fps == 0:
 print(f"FPS: {fps}")
 
 # Define the interval (in seconds) to save frames
-interval = 30
+interval = 15
 frame_interval = int(fps * interval)
 
 frame_count = 0
