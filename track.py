@@ -79,7 +79,7 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
             continue
         
 
-        if frame_count > 7749+500:
+        if frame_count > 7749+3000:#+500 
             break
         
 
@@ -102,9 +102,9 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
         track_ids = results[0].boxes.id
         annotated_frame = results[0].plot()
 
-        #if track_ids is None:
-            #print("No track IDs found for this frame.")
-            #continue
+        if track_ids is None:
+            print("No track IDs found for this frame.")
+            continue
         if track_ids is not None:
             track_ids = track_ids.int().cpu().tolist()
 
@@ -116,7 +116,7 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
                 x, y, w, h = box
                 track = track_history[track_id]
                 track.append((float(x), float(y)))  # x, y center point
-                if len(track) > 60:  # retain 30 tracks for 30 frames
+                if len(track) > 6000:  # retain 30 tracks for 30 frames
                     track.pop(0)
 
                 # Check if the object crosses the line
