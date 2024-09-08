@@ -5,21 +5,68 @@ from ultralytics import YOLO
 import supervision as sv
 
 
+def click_event(event, x, y, flags, params):
+    global LINE_START, LINE_END
+    
+    if event == cv2.EVENT_LBUTTONDOWN:
+        if LINE_START is None:
+            LINE_START = (x, y)
+            print(f"Line Start set to: {LINE_START}")
+        elif LINE_END is None:
+            LINE_END = (x, y)
+            print(f"Line End set to: {LINE_END}")
+
 #START = (221, 460)
 #END = (1068, 460)
-LINE_START = (500, 2)
-LINE_END = (500, 718)
-
-LINE_START= (85, 325)
-LINE_END= (536, 662)
-
-
+##LINE_START = (500, 2)
+##LINE_END = (500, 718)
 #line_y = LINE_START[1] + (LINE_END[1] - LINE_START[1]) // 2  # Middle of the line
 
+LINE_START = None 
+LINE_END = None
 model = YOLO("best.pt")
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 
 cap = cv2.VideoCapture(SOURCE_VIDEO_PATH)
+
+
+if not cap.isOpened():
+    print("Error: Could not open video.")
+   
+success, frame = cap.read()
+if not success:
+    print("Error: Could not read the frame.")
+    cap.release()
+    exit()
+
+cv2.imshow("Frame", frame)
+print("Click on the video frame to select the line coordinates.")
+print("Left-click to select the start and end points of the line.")
+
+
+cv2.setMouseCallback("Frame", click_event)
+    
+    # Wait until both points are set
+while LINE_END is None:
+    cv2.waitKey(1)
+    
+    # Clean up
+cap.release()
+cv2.destroyAllWindows()
+    
+if LINE_START and LINE_END:
+    print(f"LINE_START: {LINE_START}")
+    print(f"LINE_END: {LINE_END}")
+else:
+    print("Error: Could not determine line coordinates.")
+    exit()
+
+
+
+
+
+cap = cv2.VideoCapture(SOURCE_VIDEO_PATH)
+
 track_history = defaultdict(lambda: [])
 
 line_crossing_counts = defaultdict(int)  # To keep track of line crossing
@@ -72,11 +119,11 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
         #if frame_count%2 == 0 :
         #    continue
 
-        if frame_count%500 ==0 : 
+        if frame_count%200 ==0 : 
             print(frame_count)
             
         
-        if frame_count%200 == 0 or frame_count%2001 == 0:
+        if frame_count%20000 == 0 or frame_count%200001 == 0:
             print(f"Processing frame {frame_count}, Continue? ")
         #if q is press i 5 second it will break , otherwise continue 
         #    if cv2.waitKey(1) & 0xFF == ord("q"):
@@ -163,6 +210,9 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
         else:
             break
         # Write the frame with annotations to the output video
+        cv2.imshow("YOLOv8 Tracking", annotated_frame)
+        if cv2.waitKey(1) & 0xFF == ord("q"):
+            break
         sink.write_frame(annotated_frame)
 
 cap.release()
