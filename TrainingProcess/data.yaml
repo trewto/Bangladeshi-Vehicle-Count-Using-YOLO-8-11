@@ -1,0 +1,13 @@
+train: ../train/images
+val: ../valid/images
+test: ../test/images
+
+nc: 1
+names: ['Rikshaw-Py4o']
+
+roboflow:
+  workspace: test-zm1pd
+  project: rikshaw-at-banglamotor
+  version: 1
+  license: CC BY 4.0
+  url: https://universe.roboflow.com/test-zm1pd/rikshaw-at-banglamotor/dataset/1

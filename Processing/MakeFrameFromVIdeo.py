@@ -2,10 +2,10 @@ import cv2
 import os
 
 # Path to the video file on your desktop
-video_path = './Processing/Katabon_Intersection_720p.mp4'  # Ensure this is correct
+video_path = './Banglamotor_Intersection.mp4'  # Ensure this is correct
 
 # Path to the folder where you want to save the frames
-output_folder = './frame/'  # Ensure this is correct
+output_folder = './frame1/'  # Ensure this is correct
 
 # Create the output folder if it doesn't exist
 os.makedirs(output_folder, exist_ok=True)
