@@ -25,12 +25,12 @@ def click_event(event, x, y, flags, params):
 
 LINE_START = None 
 LINE_END = None
-#model = YOLO("yolov8s.pt")
+model = YOLO("yolov8s.pt")
 #model = YOLO("best_banglamotor.pt")
-model = YOLO("best.pt")
+#model = YOLO("best.pt")
 #model = YOLO("banglamoto_best_2_colab.pt")
-SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
-#SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
+#SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
+SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 
 cap = cv2.VideoCapture(SOURCE_VIDEO_PATH)
 
@@ -159,7 +159,7 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
             break
 
         if success:
-            results = model.track(frame, persist=True, verbose=False, classes=[0])
+            results = model.track(frame, persist=True, verbose=False, classes=[2])
             boxes = results[0].boxes.xywh.cpu()
             track_ids = results[0].boxes.id
             class_ids = results[0].boxes.cls.int().cpu().tolist()

@@ -28,8 +28,8 @@ LINE_END = None
 #model = YOLO("best_banglamotor.pt")
 model = YOLO("best.pt")
 #model = YOLO("banglamoto_best_2_colab.pt")
-#SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
-SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
+SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
+#SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 
 cap = cv2.VideoCapture(SOURCE_VIDEO_PATH)
 
