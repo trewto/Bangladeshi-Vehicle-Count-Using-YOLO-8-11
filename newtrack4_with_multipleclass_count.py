@@ -25,12 +25,19 @@ def click_event(event, x, y, flags, params):
 
 LINE_START = None 
 LINE_END = None
-#model = YOLO("yolov8s.pt")
+model = YOLO("yolov8s.pt")
 #model = YOLO("best_banglamotor.pt")
-model = YOLO("best.pt")
+#model = YOLO("best.pt")
 #model = YOLO("banglamoto_best_2_colab.pt")
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 #SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
+
+class_names = model.names
+
+# Display the number of classes and their names
+num_classes = len(class_names)
+print(f"Number of classes: {num_classes}")
+print("Class names:", class_names)
 
 cap = cv2.VideoCapture(SOURCE_VIDEO_PATH)
 
@@ -159,7 +166,8 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
             break
 
         if success:
-            results = model.track(frame, persist=True, verbose=False, classes=[0])
+            #results = model.track(frame, persist=True, verbose=False, classes=[0,1,2,3,4])
+            results = model.track(frame, persist=True, verbose=False)
             boxes = results[0].boxes.xywh.cpu()
             track_ids = results[0].boxes.id
             class_ids = results[0].boxes.cls.int().cpu().tolist()
@@ -247,5 +255,6 @@ print("Processing complete.")
 total_count = sum([sum(counts.values()) for counts in line_crossing_counts.values()])
 print(f"Total objects crossed the line: {total_count}")
 for class_id, counts in line_crossing_counts.items():
-    print(f"Total objects of class {class_id} crossed the line: {sum(counts.values())}")
+    class_name = model.names[class_id]
+    print(f"Total objects of class {class_id} {class_name} crossed the line: {sum(counts.values())}")
 
