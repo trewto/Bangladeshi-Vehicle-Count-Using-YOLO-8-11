@@ -1,0 +1,11 @@
+Line Start set to: (138, 441)
+Line End set to: (1144, 513)
+LINE_START: (138, 441)
+LINE_END: (1144, 513)
+Starting processing...
+Processing complete.
+Total objects crossed the line: 116
+Total objects of class 2 car crossed the line: 100
+Total objects of class 5 bus crossed the line: 7
+Total objects of class 7 truck crossed the line: 8
+Total objects of class 6 train crossed the line: 1

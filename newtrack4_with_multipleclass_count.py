@@ -31,7 +31,7 @@ model = YOLO("yolov8s.pt")
 #model = YOLO("banglamoto_best_2_colab.pt")
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 #SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
-SOURCE_VIDEO_PATH = './Processing/4K Video of Highway Traffic.mp4'
+#SOURCE_VIDEO_PATH = './Processing/4K Video of Highway Traffic.mp4'
 SOURCE_VIDEO_PATH = './Processing/obdetcfromyoutbue.mp4'
 
 class_names = model.names
