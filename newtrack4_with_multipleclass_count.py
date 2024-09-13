@@ -33,6 +33,7 @@ SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 #SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 #SOURCE_VIDEO_PATH = './Processing/4K Video of Highway Traffic.mp4'
 SOURCE_VIDEO_PATH = './Processing/obdetcfromyoutbue.mp4'
+SOURCE_VIDEO_PATH = './Processing/061.mp4'
 
 class_names = model.names
 
