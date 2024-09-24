@@ -25,7 +25,8 @@ def click_event(event, x, y, flags, params):
 
 LINE_START = None 
 LINE_END = None
-model = YOLO("yolov8s.pt")
+model = YOLO("last_nayeem_best.pt")
+#model = YOLO("yolov7.pt")
 #model = YOLO("best_banglamotor.pt")
 #model = YOLO("best.pt")
 #model = YOLO("banglamoto_best_2_colab.pt")
@@ -34,6 +35,7 @@ SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 #SOURCE_VIDEO_PATH = './Processing/4K Video of Highway Traffic.mp4'
 SOURCE_VIDEO_PATH = './Processing/obdetcfromyoutbue.mp4'
 SOURCE_VIDEO_PATH = './Processing/061.mp4'
+SOURCE_VIDEO_PATH = './Processing/oneway.mp4'
 
 class_names = model.names
 

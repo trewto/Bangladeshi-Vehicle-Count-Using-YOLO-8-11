@@ -2,12 +2,12 @@ train: I:/Git/Code-With-Nayeem/TrainingProcess/train/images
 val: I:/Git/Code-With-Nayeem/TrainingProcess/valid/images
 test: I:/Git/Code-With-Nayeem/TrainingProcess/test/images
 
-nc: 1
-names: ['Rikshaw']
+nc: 2
+names: ['cng', 'rikshaw']
 
 roboflow:
   workspace: test-zm1pd
-  project: rikshaw-2-from-img
+  project: rikshaw-cng
   version: 1
   license: CC BY 4.0
-  url: https://universe.roboflow.com/test-zm1pd/rikshaw-2-from-img/dataset/1
+  url: https://universe.roboflow.com/test-zm1pd/rikshaw-cng/dataset/1
