@@ -2,10 +2,10 @@ import cv2
 import os
 
 # Path to the video file on your desktop
-video_path = 'C:/Users/User/Downloads/YVIDEO/pervez/Abul_Hotel_Cam1_1_10fps.mp4'  # Ensure this is correct
+video_path = 'I:/Git/Code-With-Nayeem/Processing/Banglamotor_Intersection.mp4'  # Ensure this is correct
 
 # Path to the folder where you want to save the frames
-output_folder = './parvez/abulh/'  # Ensure this is correct
+output_folder = './banglamotor/'  # Ensure this is correct
 
 # Create the output folder if it doesn't exist
 os.makedirs(output_folder, exist_ok=True)
@@ -26,7 +26,7 @@ if fps == 0:
 print(f"FPS: {fps}")
 #exit()
 # Define the interval (in seconds) to save frames
-interval = 7
+interval = 5
 frame_interval = int(fps * interval)
 
 frame_count = 0
@@ -43,6 +43,8 @@ while True:
         cv2.imwrite(frame_filename, frame)
         print(f"Saved: {frame_filename}")
         saved_frame_count += 1
+        if  frame_count > frame_interval == int(fps * 600):
+            break            
 
     frame_count += 1
 
