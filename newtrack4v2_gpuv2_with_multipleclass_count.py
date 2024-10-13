@@ -28,26 +28,17 @@ def click_event(event, x, y, flags, params):
 
 LINE_START = None 
 LINE_END = None
-#model = YOLO("last_nayeem_best.pt")
-#model = YOLO("yolov7.pt")
-#model = YOLO("best_banglamotor.pt")
-#model = YOLO("best.pt")
-#model = YOLO("banglamoto_best_2_colab.pt")
-#model = YOLO("yolov8s.pt")
-#model = YOLO("best_kraggle_veh2.pt")
-#model = YOLO("best_kraggle_veh_best(2).pt")
-#model = YOLO("unfinishedtrainedv2.pt")
+
 model = YOLO("train6best___.pt")
-#model = YOLO("train6best___.pt").to(device).half()
 
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
-#SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
-SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
+##SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
+#SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 #SOURCE_VIDEO_PATH = './Processing/4K Video of Highway Traffic.mp4'
 #SOURCE_VIDEO_PATH = './Processing/obdetcfromyoutbue.mp4'
 #SOURCE_VIDEO_PATH = './Processing/061.mp4'
 #SOURCE_VIDEO_PATH = './Processing/oneway.mp4'
-SOURCE_VIDEO_PATH = 'I:/YVIDEO/singho/Kakrail to Mogbazar/042.mp4'
+#SOURCE_VIDEO_PATH = 'I:/YVIDEO/singho/Kakrail to Mogbazar/042.mp4'
 
 
 

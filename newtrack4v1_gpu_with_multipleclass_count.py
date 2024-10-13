@@ -5,6 +5,9 @@ import numpy as np
 from ultralytics import YOLO
 import supervision as sv
 
+import torch
+
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def click_event(event, x, y, flags, params):
     global LINE_START, LINE_END
@@ -25,25 +28,21 @@ def click_event(event, x, y, flags, params):
 
 LINE_START = None 
 LINE_END = None
-#model = YOLO("last_nayeem_best.pt")
-#model = YOLO("yolov7.pt")
-#model = YOLO("best_banglamotor.pt")
-#model = YOLO("best.pt")
-#model = YOLO("banglamoto_best_2_colab.pt")
-#model = YOLO("yolov8s.pt")
-#model = YOLO("best_kraggle_veh2.pt")
-#model = YOLO("best_kraggle_veh_best(2).pt")
-#model = YOLO("unfinishedtrainedv2.pt")
-model = YOLO("train6best___.pt")
+
+model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")
+#model = YOLO("train6best___.pt").to(device).half()
+
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
-#SOURCE_VIDEO_PATH = 'I:/YVIDEO/singho/Kakrail to Mogbazar/042.mp4'
-#SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
+SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
 #SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 #SOURCE_VIDEO_PATH = './Processing/4K Video of Highway Traffic.mp4'
 #SOURCE_VIDEO_PATH = './Processing/obdetcfromyoutbue.mp4'
 #SOURCE_VIDEO_PATH = './Processing/061.mp4'
 #SOURCE_VIDEO_PATH = './Processing/oneway.mp4'
 
+
+
+model.to(device)
 class_names = model.names
 
 # Display the number of classes and their names
@@ -149,29 +148,23 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
         #if frame_count%2 == 0 :
         #    continue
 
-        if frame_count%200 ==0 : 
-            print(frame_count)
+        #if frame_count%1000 ==0 : 
+        #    print(frame_count)
             
         
-        if frame_count%20000 == 0 or frame_count%200001 == 0:
-            print(f"Processing frame {frame_count}, Continue? ")
+        #if frame_count%20000 == 0 or frame_count%200001 == 0:
+        #    print(f"Processing frame {frame_count}, Continue? ")
         #if q is press i 5 second it will break , otherwise continue 
         #    if cv2.waitKey(1) & 0xFF == ord("q"):
         ##       break
-            i = input("Press Enter to continue...")
-            if i == 'q':
-                break
+       #     i = input("Press Enter to continue...")
+        #    if i == 'q':
+        #        break
         if frame_count%2 == 0: 
             continue
         
 
-        #if frame_count< 1000+ int(cap.get(cv2.CAP_PROP_FPS) * 270):
-                #print(frame_count)
-        #       continue
-            
-
-        #if frame_count > 7749+3000:#+500 
-        #    break
+        
         
         if not success:
             print("Error: Could not read frame.")
@@ -179,13 +172,14 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
 
         if success:
             #results = model.track(frame, persist=True, verbose=False, classes=[0,1,2,3,4])
-            results = model.track(frame, persist=True, verbose=False)
-            boxes = results[0].boxes.xywh.cpu()
+            results = model.track(frame, persist=True, verbose=False,conf=0.2)
+            #boxes = results[0].boxes.xywh.cpu()
+            boxes = results[0].boxes.xywh.to(device)
             track_ids = results[0].boxes.id
-            class_ids = results[0].boxes.cls.int().cpu().tolist()
+            class_ids = results[0].boxes.cls.int().tolist()
             annotated_frame = results[0].plot()
             if track_ids is not None:
-                track_ids = track_ids.int().cpu().tolist()
+                track_ids = track_ids.int().tolist()
                 #annotated_frame = results[0].plot()
 
                 for box, track_id,class_id in zip(boxes, track_ids,class_ids):
