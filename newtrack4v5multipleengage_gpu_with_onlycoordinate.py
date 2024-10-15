@@ -5,11 +5,12 @@ import numpy as np
 from ultralytics import YOLO
 import supervision as sv
 import torch
+import time  # Import the time module
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-LINE_START= (9, 10)
+LINE_START=(9, 509)
 LINE_END= (1050, 350)
 
 """
@@ -34,10 +35,19 @@ model1 = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights
 
 model2 = YOLO("yolo11n.pt")#pretrained
 
-
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 
+is_show_live = True
+write_output = True
 
+
+
+
+both_out_off = False
+if is_show_live== False and write_output == False:
+    both_out_off = True
+
+    
 #########################
 #for model 1 
 print ("For model 1 ")
@@ -65,33 +75,68 @@ if LINE_START and LINE_END:
 else:
     print("Error: Could not determine line coordinates.")
     exit()
+def is_overlapping(box1, box2, iou_threshold=0.5):
+    """
+    Determines whether two bounding boxes overlap by calculating their Intersection Over Union (IoU)
+    and checking if one is contained within the other based on area.
 
+    Args:
+        box1, box2: Bounding boxes in the format (x_center, y_center, width, height).
+        iou_threshold: Minimum IoU to consider the boxes as overlapping. Defaults to 0.5.
 
-def is_overlapping(box1, box2, minimum_overlap=0.5):
-    # Extract coordinates
+    Returns:
+        True if the boxes overlap, False otherwise.
+    """
+    # Extract box1 coordinates
     x1, y1, w1, h1 = box1
     x2, y2, w2, h2 = box2
 
+    # Calculate the (x, y)-coordinates of the top-left and bottom-right corners for both boxes
+    x1_min, y1_min = x1 - w1 / 2, y1 - h1 / 2
+    x1_max, y1_max = x1 + w1 / 2, y1 + h1 / 2
+
+    x2_min, y2_min = x2 - w2 / 2, y2 - h2 / 2
+    x2_max, y2_max = x2 + w2 / 2, y2 + h2 / 2
+
+    # Calculate areas
+    box1_area = w1 * h1
+    box2_area = w2 * h2
+
+    # Check if box2 is completely inside box1
+    if x1_min <= x2_min <= x2_max <= x1_max and y1_min <= y2_min <= y2_max <= y1_max:
+        # Calculate the ratio of the inner box area to the outer box area
+       
+        return (box2_area / box1_area)>= iou_threshold  # box2 is inside box1 and meets the area ratio requirement
+    
+
+    # Check if box1 is completely inside box2
+    if x2_min <= x1_min <= x1_max <= x2_max and y2_min <= y1_min <= y1_max <= y2_max:
+        # Calculate the ratio of the inner box area to the outer box area
+       
+       return (box1_area / box2_area) >= iou_threshold  # box1 is inside box2 and meets the area ratio requirement
+    
+
     # Calculate the (x, y)-coordinates of the intersection rectangle
-    xA = max(x1 - w1 / 2, x2 - w2 / 2)
-    yA = max(y1 - h1 / 2, y2 - h2 / 2)
-    xB = min(x1 + w1 / 2, x2 + w2 / 2)
-    yB = min(y1 + h1 / 2, y2 + h2 / 2)
+    inter_x_min = max(x1_min, x2_min)
+    inter_y_min = max(y1_min, y2_min)
+    inter_x_max = min(x1_max, x2_max)
+    inter_y_max = min(y1_max, y2_max)
 
-    # Compute the area of intersection rectangle
-    interWidth = max(0, xB - xA)
-    interHeight = max(0, yB - yA)
-    interArea = interWidth * interHeight
+    # Compute the width and height of the intersection rectangle
+    inter_width = max(0, inter_x_max - inter_x_min)
+    inter_height = max(0, inter_y_max - inter_y_min)
 
-    # Compute the area of both the prediction and ground-truth rectangles
-    box1Area = w1 * h1
-    box2Area = w2 * h2
+    # Compute the area of intersection
+    inter_area = inter_width * inter_height
 
-    # Compute the overlap ratio
-    overlap = interArea / float(box1Area + box2Area - interArea)
+    # Compute the union area (total area covered by both boxes)
+    union_area = box1_area + box2_area - inter_area
 
-    # Check if the overlap is greater than the minimum overlap threshold
-    return overlap >= minimum_overlap
+    iou = inter_area / union_area
+
+    # Check if the IoU exceeds the threshold
+    return iou >= iou_threshold
+
 
 
 cap = cv2.VideoCapture(SOURCE_VIDEO_PATH)
@@ -154,32 +199,29 @@ total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 
 print(f"Total number of frames in the video: {total_frames}")
-
+start_time= time.time()
+cap.set(cv2.CAP_PROP_POS_FRAMES, 900)
 #point_recorded = [];
 with sv.VideoSink("output_single_line.mp4", video_info) as sink:
-
+    
     while cap.isOpened():
+        
         success, frame = cap.read()
         frame_count += 1
         
-
-        
+     
         if frame_count%2 == 0: 
             continue
-
+        
         
         if not success:
             print("Error: Could not read frame.")
             break
 
         if success:
-            #results = model.track(frame, persist=True, verbose=False, classes=[0,1,2,3,4])
-            #results = model.track(frame, persist=True, verbose=False,conf=0.2)
-            #results = model.track(frame, persist=True, verbose=False,conf=0.2,classes=[2,3,5])
-           # results = model.track(frame, persist=True, verbose=False,classes=[2,3,5])
-           # results = model.track(frame, persist=True, verbose=False,classes=[2,3,5,80,81])
+            
             results1 = model1.track(frame, persist=True, verbose=False, classes=[0,1])
-            results2 = model2.track(frame, persist=True, verbose=False, classes=[2,3,5],conf=0.2)
+            results2 = model2.track(frame, persist=True, verbose=False, classes=[2,3,5],conf=0.1)
            
 
             # Processing for model 1 
@@ -212,13 +254,16 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
                     if len(track1) > 20:
                         track1.pop(0)
                      # Draw the movement track
-                    points1 = np.array(track1).astype(np.int32).reshape((-1, 1, 2))
-                    cv2.polylines(annotated_frame, [points1], isClosed=False, color=(230, 230, 230), thickness=2)
+
+                    if both_out_off is False:
+                        points1 = np.array(track1).astype(np.int32).reshape((-1, 1, 2))
+                        cv2.polylines(annotated_frame, [points1], isClosed=False, color=(230, 230, 230), thickness=2)
 
 
                     color = (0, 255, 0)  # Green for model 1
-                    cv2.rectangle(annotated_frame, top_left, bottom_right, color, 2)
-                    cv2.putText(annotated_frame, f"{model1.names[class_id1]}_{class_id1}, T-{track_id1}, {conf}", (top_left[0], top_left[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    if both_out_off is False:
+                        cv2.rectangle(annotated_frame, top_left, bottom_right, color, 2)
+                        cv2.putText(annotated_frame, f"{model1.names[class_id1]}_{class_id1}, T-{track_id1}, {conf}", (top_left[0], top_left[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
                     if len(track1) > 1:
                         prev_x = track1[-2][0]
@@ -226,24 +271,41 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
                         if two_line_intersect(x, y, prev_x, prev_y, LINE_START[0], LINE_START[1], LINE_END[0], LINE_END[1]):
                             line_crossing_counts1[class_id1][track_id1] = 1
                             
-
-            output_string = " "
-            for class_id1, counts1 in line_crossing_counts1.items():
-                class_name1 = model1.names[class_id1]
-                output_string += f"{class_id1}_{class_name1}={sum(counts1.values())},"
+            if both_out_off is False:
+                output_string = " "
+                for class_id1, counts1 in line_crossing_counts1.items():
+                    class_name1 = model1.names[class_id1]
+                    output_string += f"{class_id1}_{class_name1}={sum(counts1.values())},"
 
 
                 # Draw the counting line
-            total_count = sum([sum(counts.values()) for counts in line_crossing_counts1.values()])
-                #cv2.putText(annotated_frame, f"Total: {total_count} , Frame = {frame_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-            cv2.putText(annotated_frame, f"Total: {total_count} ,  Frame = {frame_count} ::: {output_string}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
-                
+            if both_out_off is False:
+                total_count = sum([sum(counts.values()) for counts in line_crossing_counts1.values()])
+                    #cv2.putText(annotated_frame, f"Total: {total_count} , Frame = {frame_count}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                cv2.putText(annotated_frame, f"Total: {total_count} ,  Frame = {frame_count} ::: {output_string}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+                    
 
             if track_ids2 is not None: 
                 # Draw bounding boxes for model 2
                 for box2,track_id2, class_id2,cf in zip(boxes2,track_ids2, class_ids2,confidences2):
-                    if is_overlapping(box1, box2):
-                        continue # Skip drawing the bounding box if it overlaps with a bounding box from model 1
+
+                   # if is_overlapping(box1, box2):
+                    #    continue # Skip drawing the bounding box if it overlaps with a bounding box from model 1
+                    #if is_overlapping(box2, box1):
+                    #    continue
+                    #if is_overlapping(box2, box1):
+                    #    continue # Skip drawing the bounding box if it overlaps with a bounding box from model 1
+                    con = 0 ; 
+                    if boxes1 is not None:
+                        for box1 in boxes1:
+                            if is_overlapping(box1, box2):
+                                con = 1 
+
+                    if con == 1:
+                        continue 
+                        
+
+
                     x, y, w, h = box2
                     track_id2 = int(track_id2)
                     class_id2 = int(class_id2)
@@ -256,16 +318,18 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
                     if len(track2) > 20:
                         track2.pop(0)
                      # Draw the movement track
-                    points2 = np.array(track2).astype(np.int32).reshape((-1, 1, 2))
-                    cv2.polylines(annotated_frame, [points2], isClosed=False, color=(230, 230, 230), thickness=2)
+                    if both_out_off is False:
+                        points2 = np.array(track2).astype(np.int32).reshape((-1, 1, 2))
+                        cv2.polylines(annotated_frame, [points2], isClosed=False, color=(230, 230, 230), thickness=2)
 
 
 
 
-
+                  
                     color = (0, 0, 255)  # Red for model 2
-                    cv2.rectangle(annotated_frame, top_left, bottom_right, color, 2)
-                    cv2.putText(annotated_frame, f"{model2.names[class_id2]}_{class_id2}, T-{track_id2}, {cf}", (top_left[0], top_left[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
+                    if both_out_off is False:
+                        cv2.rectangle(annotated_frame, top_left, bottom_right, color, 2)
+                        cv2.putText(annotated_frame, f"{model2.names[class_id2]}_{class_id2}, T-{track_id2}, {cf}", (top_left[0], top_left[1] - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 2)
 
                     if len(track2) > 1:
                         prev_x = track2[-2][0]
@@ -277,30 +341,41 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
           
                                         
             
+            if both_out_off is False:
+                output_string = " "
+                for class_id2, counts2 in line_crossing_counts2.items():
+                    class_name2 = model2.names[class_id2]
+                    output_string += f"{class_id2}_{class_name2}={sum(counts2.values())},"
 
-            output_string = " "
-            for class_id2, counts2 in line_crossing_counts2.items():
-                class_name2 = model2.names[class_id2]
-                output_string += f"{class_id2}_{class_name2}={sum(counts2.values())},"
 
-
-                # Draw the counting line
-            total_count = sum([sum(counts.values()) for counts in line_crossing_counts2.values()])
-            cv2.putText(annotated_frame, f"Total: {total_count} ,  Frame = {frame_count} ::: {output_string}", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2) 
-                
+                    # Draw the counting line
+                total_count = sum([sum(counts.values()) for counts in line_crossing_counts2.values()])
+                cv2.putText(annotated_frame, f"Total: {total_count} ,  Frame = {frame_count} ::: {output_string}", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2) 
+                    
 
         else:
             break
+        
+        if both_out_off is False:
+            cv2.line(annotated_frame, LINE_START, LINE_END, (0, 0, 255), 2)
 
-        cv2.line(annotated_frame, LINE_START, LINE_END, (0, 0, 255), 2)
-        cv2.imshow("YOLOv8 Tracking", annotated_frame)
-        if cv2.waitKey(1) & 0xFF == ord("q"):
-            break
-        sink.write_frame(annotated_frame)
-
-cap.release()
-cv2.destroyAllWindows()
+        if is_show_live:
+            cv2.imshow("YOLOv11 Tracking", annotated_frame)
+            if cv2.waitKey(1) & 0xFF == ord("q"):
+                break
+        
+        if write_output:
+            sink.write_frame(annotated_frame)
+       
+        
+       
+if write_output:
+    cap.release()
+    cv2.destroyAllWindows()
 #print(f"Total objects crossed the line: {sum(line_crossing_counts.values())}")
+
+end_time = time.time()
+print ("Time taken: ", end_time-start_time)
 print("Processing complete.")
 
 
