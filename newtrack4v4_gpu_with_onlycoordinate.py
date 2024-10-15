@@ -4,22 +4,11 @@ import cv2
 import numpy as np
 from ultralytics import YOLO
 import supervision as sv
-
 import torch
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-#LINE_START: (9, 509)
-#LINE_END: (1050, 350)
-
-LINE_START = (9, 509) 
-LINE_END = (1050, 350)
-
-#LINE_START= (68, 515)
-#LINE_END= (798, 535)
-LINE_START= (758, 179)
-LINE_END= (972, 209)
 LINE_START= (9, 509)
 LINE_END= (1050, 350)
 
@@ -43,7 +32,7 @@ Location: Banglamotor, banglamotor
 
 #model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")
 #model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train2/weights/best.pt")
-model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train2/weights/best.pt")
+model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train13/weights/best.pt")
 #model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train2/weights/best.pt").load("yolo11n.pt")
 #model = YOLO("yolo11s.pt")
 #model = YOLO("train6best___.pt").to(device).half()
@@ -138,30 +127,13 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
     while cap.isOpened():
         success, frame = cap.read()
         frame_count += 1
-        #if  i pres q it will break
-        #optimization included 
-        #if frame_count%2 == 0 :
-        #    continue
-
-        #if frame_count%1000 ==0 : 
-        #    print(frame_count)
-            
         
-        #if frame_count%20000 == 0 or frame_count%200001 == 0:
-        #    print(f"Processing frame {frame_count}, Continue? ")
-        #if q is press i 5 second it will break , otherwise continue 
-        #    if cv2.waitKey(1) & 0xFF == ord("q"):
-        ##       break
-       #     i = input("Press Enter to continue...")
-        #    if i == 'q':
-        #        break
+
         if frame_count%500 == 0:
             print(frame_count)
         if frame_count%2 == 0: 
             continue
-        
 
-        
         
         if not success:
             print("Error: Could not read frame.")
@@ -201,29 +173,16 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
 
                     # Check if the object has crossed the line
                     if len(track) > 1:
-                        #print(f"Average y value for track {track_id}: {average_y}")
-                        
-                        # Check if the object has crossed the line
-                        #if  abs(x - LINE_START[0]) < 30:
-                        #    line_crossing_counts[track_id] = 1
-                        #    print(f"Object {track_id} crossed the line. Count: {line_crossing_counts[track_id]}")
+                       
                         prev_x = track[-2][0]
-                        #average_x = (prev_x + x) / 2
-                        #print(f"Average x value for track {track_id}: {average_x}")
+                        
                         prev_y = track[-2][1] 
-                        #average_y = (prev_y + y) / 2
-
-                        #now  i want to draw a line (x,y) to (prev_x, prev_y) and check if it crosses the line ( LINE_START[0], LINE_START[0]) to ( LINE_END[0], LINE_END[0])
+                        
 
                         if two_line_intersect(x, y, prev_x, prev_y, LINE_START[0], LINE_START[1], LINE_END[0], LINE_END[1]):
                             line_crossing_counts[class_id][track_id] = 1
                             #print(f"Object {track_id} crossed the line. Count: {line_crossing_counts[track_id]}")
 
-                        # Check if the object has crossed the line
-                        #if y < LINE_START[1] and prev_y >= LINE_START[1]:
-                        #    line_crossing_counts[track_id] += 1
-                        #    print(f"Object {track_id} crossed the line. Count: {line_crossing_counts[track_id]}")
-                    
 
                     # Draw the counting line
                     total_count = sum([sum(counts.values()) for counts in line_crossing_counts.values()])
@@ -234,19 +193,11 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
                 #if cv2.waitKey(1) & 0xFF == ord("q"):
                 #    break
             else:
-                #print("No objects detected or tracked in this frame.")
                 x = 1; #do nothing
-                #q
-                # print("x =1")
+                
 
         else:
             break
-        # Write the frame with annotations to the output video
-        #points = np.array(point_recorded).astype(np.int32).reshape((-1, 1, 2))
-        #cv2.polylines(annotated_frame, [points], isClosed=False, color=(230, 230, 230), thickness=2)
-        # Plot the points
-        #for (x, y) in point_recorded:
-        #    cv2.circle(annotated_frame, (int(x), int(y)), radius=2, color=(0, 0, 255), thickness=-1)
 
         cv2.line(annotated_frame, LINE_START, LINE_END, (0, 0, 255), 2)
         cv2.imshow("YOLOv8 Tracking", annotated_frame)
