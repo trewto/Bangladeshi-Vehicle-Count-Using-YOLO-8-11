@@ -20,17 +20,37 @@ LINE_END = (1050, 350)
 #LINE_END= (798, 535)
 LINE_START= (758, 179)
 LINE_END= (972, 209)
-LINE_START= (716, 171)
-LINE_END= (1016, 200)
+LINE_START= (9, 509)
+LINE_END= (1050, 350)
+
+"""
+katabon
+LINE_START: (9, 509)
+LINE_END: (1050, 350)
+
+
+LINE_START: (68, 515)
+LINE_END: (798, 535)
+Location: Shahbag, shahbag23y8
+
+
+LINE_START: (716, 171)
+LINE_END: (1016, 200)
+Location: Banglamotor, banglamotor
+
+"""
 
 
 #model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")
-model = YOLO("yolo11s.pt")
+#model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train2/weights/best.pt")
+model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train2/weights/best.pt")
+#model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train2/weights/best.pt").load("yolo11n.pt")
+#model = YOLO("yolo11s.pt")
 #model = YOLO("train6best___.pt").to(device).half()
 
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
-SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
-SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
+#SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
+#SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 #SOURCE_VIDEO_PATH = './Processing/4K Video of Highway Traffic.mp4'
 #SOURCE_VIDEO_PATH = './Processing/obdetcfromyoutbue.mp4'
 #SOURCE_VIDEO_PATH = './Processing/061.mp4'
@@ -152,7 +172,8 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
             #results = model.track(frame, persist=True, verbose=False,conf=0.2)
             #results = model.track(frame, persist=True, verbose=False,conf=0.2,classes=[2,3,5])
            # results = model.track(frame, persist=True, verbose=False,classes=[2,3,5])
-            results = model.track(frame, persist=True, verbose=False,classes=[2,3,5])
+           # results = model.track(frame, persist=True, verbose=False,classes=[2,3,5,80,81])
+            results = model.track(frame, persist=True, verbose=False)
            # results = model.track(frame, persist=True, verbose=False)
             #boxes = results[0].boxes.xywh.cpu()
             boxes = results[0].boxes.xywh.to(device)
