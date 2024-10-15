@@ -32,10 +32,10 @@ Location: Banglamotor, banglamotor
 
 
 model1 = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")
-
 model2 = YOLO("yolo11n.pt")#pretrained
-
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
+
+
 
 is_show_live = True
 write_output = True
@@ -200,7 +200,8 @@ total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 
 print(f"Total number of frames in the video: {total_frames}")
 start_time= time.time()
-cap.set(cv2.CAP_PROP_POS_FRAMES, 900)
+
+
 #point_recorded = [];
 with sv.VideoSink("output_single_line.mp4", video_info) as sink:
     
