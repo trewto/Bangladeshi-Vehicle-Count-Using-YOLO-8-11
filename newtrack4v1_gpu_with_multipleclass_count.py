@@ -29,12 +29,14 @@ def click_event(event, x, y, flags, params):
 LINE_START = None 
 LINE_END = None
 
-model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")
+#model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")
+model = YOLO("yolov8l.pt")
+
 #model = YOLO("train6best___.pt").to(device).half()
 
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
-#SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
+SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 #SOURCE_VIDEO_PATH = './Processing/4K Video of Highway Traffic.mp4'
 #SOURCE_VIDEO_PATH = './Processing/obdetcfromyoutbue.mp4'
 #SOURCE_VIDEO_PATH = './Processing/061.mp4'
@@ -136,7 +138,8 @@ frame_count = 0
 video_info = sv.VideoInfo.from_video_path(SOURCE_VIDEO_PATH)
 print("Starting processing...")
 line_crossing_counts = defaultdict(lambda: defaultdict(int))  # To keep track of line crossing counts by class and track_id
-
+total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+print(f"Total number of frames in the video: {total_frames}")
 point_recorded = [];
 with sv.VideoSink("output_single_line.mp4", video_info) as sink:
 
@@ -160,6 +163,8 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
        #     i = input("Press Enter to continue...")
         #    if i == 'q':
         #        break
+        if frame_count%500 == 0:
+            print(frame_count)
         if frame_count%2 == 0: 
             continue
         
@@ -247,7 +252,7 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
         #    cv2.circle(annotated_frame, (int(x), int(y)), radius=2, color=(0, 0, 255), thickness=-1)
 
         cv2.line(annotated_frame, LINE_START, LINE_END, (0, 0, 255), 2)
-        cv2.imshow("YOLOv8 Tracking", annotated_frame)
+        #cv2.imshow("YOLOv8 Tracking", annotated_frame)
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
         sink.write_frame(annotated_frame)
