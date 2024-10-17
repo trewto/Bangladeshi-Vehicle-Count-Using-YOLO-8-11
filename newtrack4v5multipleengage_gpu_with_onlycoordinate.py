@@ -10,8 +10,12 @@ import time  # Import the time module
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 
-LINE_START=(9, 509)
-LINE_END= (1050, 350)
+LINE_START= (796, 111)
+LINE_END= (995, 156)
+
+
+LINE_START= (716, 171)
+LINE_END= (1016, 200)
 
 """
 katabon
@@ -28,12 +32,19 @@ LINE_START: (716, 171)
 LINE_END: (1016, 200)
 Location: Banglamotor, banglamotor
 
+banglamotor new
+LINE_START: (796, 111)
+LINE_END: (995, 156)
+
 """
 
 
-model1 = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")
-model2 = YOLO("yolo11n.pt")#pretrained
+#model1 = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")#### IT IS THE MODEL WITH BANGLAMOTOR 
+model1 = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train14/weights/best.pt")
+model2 = YOLO("yolov8l.pt")#pretrained
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
+SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
+SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 
 
 
@@ -75,7 +86,7 @@ if LINE_START and LINE_END:
 else:
     print("Error: Could not determine line coordinates.")
     exit()
-def is_overlapping(box1, box2, iou_threshold=0.5):
+def is_overlapping(box1, box2, iou_threshold=0.4):
     """
     Determines whether two bounding boxes overlap by calculating their Intersection Over Union (IoU)
     and checking if one is contained within the other based on area.
@@ -211,8 +222,8 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
         frame_count += 1
         
      
-        if frame_count%2 == 0: 
-            continue
+        #if frame_count%2 == 0: 
+        #    continue
         
         
         if not success:
@@ -222,7 +233,7 @@ with sv.VideoSink("output_single_line.mp4", video_info) as sink:
         if success:
             
             results1 = model1.track(frame, persist=True, verbose=False, classes=[0,1])
-            results2 = model2.track(frame, persist=True, verbose=False, classes=[2,3,5],conf=0.1)
+            results2 = model2.track(frame, persist=True, verbose=False, classes=[2,3,5])
            
 
             # Processing for model 1 
@@ -378,8 +389,9 @@ if write_output:
 end_time = time.time()
 print ("Time taken: ", end_time-start_time)
 print("Processing complete.")
-
-
+print (model1)
+print (model2)
+print (SOURCE_VIDEO_PATH)
 for class_id, counts in line_crossing_counts1.items():
     class_name = model1.names[class_id]
     print(f"Total objects of class {class_id} {class_name} crossed the line: {sum(counts.values())}")
