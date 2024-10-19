@@ -42,8 +42,8 @@ LINE_END: (995, 156)
 #model1 = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")#### IT IS THE MODEL WITH BANGLAMOTOR 
 model1 = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train14/weights/best.pt")
 model2 = YOLO("yolov8l.pt")#pretrained
-SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
-SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
+#SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
+#SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
 SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 
 
