@@ -48,6 +48,7 @@ SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 
 
 
+
 is_show_live = True
 write_output = True
 
