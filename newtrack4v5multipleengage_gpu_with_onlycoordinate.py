@@ -44,6 +44,7 @@ model1 = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train14/weight
 model2 = YOLO("yolov8l.pt")#pretrained
 #SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 #SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
+
 SOURCE_VIDEO_PATH = './Processing/Banglamotor_Intersection.mp4'
 
 
