@@ -13,6 +13,7 @@ def freeze_layer(trainer):
     print(f"{num_freeze} layers are freezed.")
 
 
+
 model = YOLO("yolo11n.pt") 
 model.add_callback("on_train_start", freeze_layer)
 
