@@ -32,9 +32,9 @@ Location: Banglamotor, banglamotor
 
 #model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU/runs/detect/train9/weights/best.pt")
 #model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train2/weights/best.pt")
-model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train13/weights/best.pt")
+#model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train13/weights/best.pt")
 #model = YOLO("I:/Git/Code-With-Nayeem/Train_With_GPU__v2_Same_Weight/runs/detect/train2/weights/best.pt").load("yolo11n.pt")
-#model = YOLO("yolo11s.pt")
+model = YOLO("yolo11n.pt")
 #model = YOLO("train6best___.pt").to(device).half()
 
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
