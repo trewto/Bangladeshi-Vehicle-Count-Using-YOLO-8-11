@@ -8,7 +8,7 @@ import supervision as sv
 import torch
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+print(device)
 def click_event(event, x, y, flags, params):
     global LINE_START, LINE_END
     
@@ -29,7 +29,7 @@ def click_event(event, x, y, flags, params):
 LINE_START = None 
 LINE_END = None
 
-model = YOLO("train6best___.pt")
+model = YOLO("yolov8n.pt")
 
 SOURCE_VIDEO_PATH = './Processing/Katabon_Intersection_720p.mp4'
 ##SOURCE_VIDEO_PATH = './Processing/Shahbagh_Intersection.mp4'
